@@ -1,0 +1,11 @@
+<dialog [id]="modalId" class="modal" >
+    <div class="modal-box w-11/12 max-w-xl">
+      <form method="dialog">
+        <ng-content select="[modalExitButton]"></ng-content>
+      </form>
+      <ng-content select="[modalTitle]"></ng-content>
+      <div class="modal-action flex justify-start">
+        <ng-content select="[modalBody]"></ng-content>
+      </div>
+    </div>
+</dialog>

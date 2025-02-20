@@ -1,0 +1,65 @@
+<div class="mt-[16px] py-[32px] px-[40px] bg-white rounded-[12px]">
+
+    <img src="" alt="">
+
+    <div class="mb-8">
+        <span class="text-[32px] font-bold">Reserva</span>
+        <hr class="border-[1.5px]">
+    </div>
+
+    <div class="flex justify-start mb-8">
+        <div>
+            <div class="mb-2"> 
+                <span class="text-[28px]">CheckIn: </span>
+                <span class="text-[20px] ml-4">{{ reservation.checkIn }}</span>
+            </div>
+            <div>
+                <span class="text-[28px]">CheckOut: </span>
+                <span class="text-[20px] ml-4">{{ reservation.checkOut }}</span>
+            </div>
+        </div>
+        
+        <div class="ml-10">
+            <div class="mb-2">
+                <span class="text-[28px]">Quarto: </span>
+                <span class="text-[20px] ml-4">{{ reservation.roomType }}</span>
+            </div>
+            <div>
+                <span class="text-[28px]">Nº de Hóspedes: </span>
+                <span class="text-[20px] ml-4">{{ reservation.numberOfGuests }}</span>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <div class="mb-8">
+        <span class="text-[32px] font-bold">Hóspede</span>
+        <hr class="border-[1.5px]">
+    </div>
+    
+    <div class="flex justify-start">
+        <div>
+            <div class="mb-2">
+                <span class="text-[28px]">Nome: </span>
+                <span class="text-[20px] ml-4">{{ guest.name }}</span>
+            </div>
+            <div>
+                <span class="text-[28px]">Email: </span>
+                <span class="text-[20px] ml-4">{{ guest.email }}</span>
+            </div>
+        </div>
+        
+        <div class="ml-10">
+            <div class="mb-2">
+                <span class="text-[28px]">Telefone: </span>
+                <span class="text-[20px] ml-4">{{ guest.phone }}</span>
+            </div>
+            <div>
+                <span class="text-[28px]">Documento: </span>
+                <span class="text-[20px] ml-4">{{ guest.document }}</span>
+            </div>
+        </div>
+    </div>
+
+</div>

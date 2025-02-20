@@ -1,0 +1,322 @@
+<div class="mt-[16px] py-[32px] px-[40px] bg-white rounded-[12px]">
+
+    <app-search-bar></app-search-bar>
+
+    <div class="flex justify-start items-center mt-2">
+        <div class="flex justify-start items-center mr-6">
+            <label class="label cursor-pointer">
+                <input [(ngModel)]="checkboxStates.checkIn" type="checkbox" class="checkbox checkbox-primary size-[20px] mr-2" />
+                <span class="label-text">CheckIn</span>
+            </label>
+        </div>
+        <div class="flex justify-start items-center mr-6">
+            <label class="label cursor-pointer">
+                <input [(ngModel)]="checkboxStates.checkOut" type="checkbox" class="checkbox checkbox-primary size-[20px] mr-2" />
+                <span class="label-text">CheckOut</span>
+            </label>
+        </div>
+        <div class="flex justify-start items-center mr-6">
+            <label class="label cursor-pointer">
+                <input [(ngModel)]="checkboxStates.roomType" type="checkbox" class="checkbox checkbox-primary size-[20px] mr-2" />
+                <span class="label-text">Quarto</span>
+            </label>
+        </div>
+        <div class="flex justify-start items-center mr-6">
+            <label class="label cursor-pointer">
+                <input [(ngModel)]="checkboxStates.status" type="checkbox" class="checkbox checkbox-primary size-[20px] mr-2" />
+                <span class="label-text">Status</span>
+            </label>
+        </div>
+    </div>
+    
+</div>
+
+
+<div class="mt-[16px] py-[32px] px-[40px] bg-white rounded-[12px]">
+
+    <div class="flex justify-end pb-4">
+        <app-common-button buttonClass="bg-blue-600 hover:bg-blue-900 text-white font-bold py-2 px-4"
+        onclick="modalReservation.showModal()">
+        <ng-container commonButton>
+            <span>Adicionar Reserva +</span>
+        </ng-container>
+        </app-common-button>
+    </div>
+
+    <app-table>
+        <ng-container tableHead>
+            <tr>
+                <th>Hóspede</th>
+                <th>
+                    <div class="flex items-center justify-center">
+                        CheckIn 
+                        <a (click)="sortList('checkIn')" class="cursor-pointer">
+                            <img src="assets/order-icon.svg" class="size-[20px] ml-2" alt="order-icon">
+                        </a>
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-center">
+                        CheckOut 
+                        <a (click)="sortList('checkOut')" class="cursor-pointer">
+                            <img src="assets/order-icon.svg" class="size-[20px] ml-2" alt="order-icon">
+                        </a>
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-center">
+                        Quarto 
+                        <a (click)="sortList('roomType')" class="cursor-pointer">
+                            <img src="assets/order-icon.svg" class="size-[20px] ml-2" alt="order-icon">
+                        </a>
+                    </div>
+                </th>
+                <th>Nº de Hóspedes</th>
+                <th>
+                    <div class="flex items-center justify-center">
+                        Status 
+                        <a (click)="sortList('status')" class="cursor-pointer">
+                            <img src="assets/order-icon.svg" class="size-[20px] ml-2" alt="order-icon">
+                        </a>
+                    </div>
+                </th>
+                <th></th>
+            </tr>
+        </ng-container>
+        <ng-container tableBody>
+            @for (item of reservationList; track $index) {
+                <tr class="hover">
+                    <td>{{ findGuest(item.guestId)?.name }}</td>
+                    <td>{{ item.checkIn }}</td>
+                    <td>{{ item.checkOut }}</td>
+                    <td>{{ item.roomType }}</td>
+                    <td>{{ item.numberOfGuests }}</td>
+                    <td>
+                        <app-badge [badgeType]="item.status" />
+                    </td>
+                    <td>
+                        <div class="flex justify-start">
+                            <a [routerLink]="'/reservations/' + item.id" class="cursor-pointer">
+                                <img src="assets/info-icon.svg" class="size-[26px] mx-1" alt="info-icon">
+                            </a>
+                            <a onclick="modalReservation.showModal()" (click)="toggleUpdatedReservation(item)" class="cursor-pointer">
+                                <img src="assets/edit-icon.svg" class="size-[26px] mx-1" alt="edit-icon">
+                            </a>
+                            <a onclick="modalDeleteReservation.showModal()" (click)="setDeletedReservation(item.id)" class="cursor-pointer">
+                                <img src="assets/remove-icon.svg" class="size-[26px] mx-1" alt="edit-icon">
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            @empty {
+                <td colspan="7">
+                    <div class="mt-4 text-[20px]">
+                        Nenhuma Reserva Listada
+                    </div>
+                </td>
+            }
+        </ng-container>
+    </app-table>
+
+</div>   
+
+
+<app-modal modalId="modalReservation">
+    <ng-container modalExitButton>
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-[16px]" (click)="toggleUpdatedReservation()">✕</button>
+    </ng-container>
+    <ng-container modalTitle>
+        @if (updatedReservation) {
+            <h3 class="font-semibold text-[24px] p-2">Editar Reserva</h3>
+        }
+        @else {
+            <h3 class="font-semibold text-[24px] p-2">Nova Reserva</h3>
+        }
+    </ng-container>
+    <ng-container modalBody>
+        <form [formGroup]="formReservations" (ngSubmit)="onSubmit()" class="w-full">
+
+            <div class="w-full">
+
+                <div class="flex flex-col p-2">
+                    <label for="guest">Hóspede: <span
+                            class="text-red-700 font-bold">*</span></label>
+                    <select id="guest" name="guest" formControlName="guest"
+                    class="select select-bordered w-full bg-white text-black">
+                        @for (item of guestList; track $index) {
+                            <option [value]="item.id">{{ item.name }} - {{ item.document }}</option>
+                        }
+                    </select>
+
+                    @if (
+                        (formReservations.get('guest')?.invalid && 
+                        formReservations.get('guest')?.touched) ||
+                        (alertAll && formReservations.get('guest')?.invalid)
+                    ) {
+                        <p class="text-red-700">Selecione um hóspede</p>
+                    }
+                </div>
+    
+                <div class="flex justify-start">
+                    <div class="flex flex-col p-2">
+                        <label for="checkIn">CheckIn: <span
+                                class="text-red-700 font-bold">*</span></label>
+                        <input type="date" id="checkIn" name="checkIn" formControlName="checkIn"
+                            class="input input-bordered w-full bg-white"/>
+
+                        @if (
+                            (formReservations.get('checkIn')?.invalid && 
+                            formReservations.get('checkIn')?.touched) ||
+                            (!validCheckInAndCheckOut() && 
+                            formReservations.get('checkIn')?.touched)
+                        ) {
+                            <p class="text-red-700">Insira um data válida</p>
+                        }
+                    </div>
+
+
+                    <div class="flex flex-col p-2">
+                        <label for="checkOut">CheckOut: <span
+                                class="text-red-700 font-bold">*</span></label>
+                        <input type="date" id="checkOut" name="checkOut" formControlName="checkOut"
+                            class="input input-bordered w-full bg-white"/>
+
+                        @if (
+                            (formReservations.get('checkOut')?.invalid && 
+                            formReservations.get('checkOut')?.touched) ||
+                            (!validCheckInAndCheckOut() && 
+                            formReservations.get('checkOut')?.touched)
+                        ) {
+                            <p class="text-red-700">Insira um data válida</p>
+                        }
+                    </div>
+                </div>
+    
+                <div class="flex justify-start">
+                    <div class="flex flex-col p-2">
+                        <label for="roomType">Quarto: <span
+                                class="text-red-700 font-bold">*</span></label>
+                        <select id="roomType" name="roomType" formControlName="roomType"
+                            class="select select-bordered w-full max-w-xs bg-white text-black">
+                            <option value="Standard">Standard</option>
+                            <option value="Deluxe">Deluxe</option>
+                            <option value="Suite">Suite</option>
+                        </select>
+                        
+                        @if (
+                            (formReservations.get('roomType')?.invalid && 
+                            formReservations.get('roomType')?.touched) ||
+                            (alertAll && formReservations.get('roomType')?.invalid)
+                        ) {
+                            <p class="text-red-700">Selecione um quarto</p>
+                        }
+
+                        @if (maxRooms) {
+                            <p class="text-red-700">Disponibilidade máxima atingida</p>
+                        }
+                    </div>
+
+                    <div class="flex flex-col p-2">
+                        <label for="numberOfGuests">Número de Hóspede: <span
+                                class="text-red-700 font-bold">*</span></label>
+                        <input type="number" id="numberOfGuests" name="numberOfGuests" formControlName="numberOfGuests"
+                            class="input input-bordered bg-white"/>
+
+                        @if (
+                            (formReservations.get('numberOfGuests')?.invalid && 
+                            formReservations.get('numberOfGuests')?.touched) ||
+                            (alertAll && formReservations.get('numberOfGuests')?.invalid)
+                        ) {
+                            <p class="text-red-700">Selecione no mínimo um hóspede</p>
+                        }
+
+                        @if (maxCapacity) {
+                            <p class="text-red-700">Capacidade máxima atingida</p>
+                        }
+                    </div>
+
+                    @if (updatedReservation) {
+                        <div class="flex flex-col p-2">
+                            <label for="status">Status: <span
+                                    class="text-red-700 font-bold">*</span></label>
+                            <select id="status" name="status" formControlName="status"
+                                class="select select-bordered w-full max-w-xs bg-white text-black">
+                                <option value="confirmed">Confirmed</option>
+                                <option value="pending">Pending</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            
+                            @if (
+                                (formReservations.get('status')?.invalid && 
+                                formReservations.get('status')?.touched) ||
+                                (alertAll && formReservations.get('status')?.invalid)
+                            ) {
+                                <p class="text-red-700">Selecione um status</p>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="flex flex-col p-2">
+                    <label for="remarks">Observações: </label>
+                    <textarea id="remarks" name="remarks" formControlName="remarks"
+                        class="textarea textarea-bordered bg-white">
+                    </textarea>
+                </div>
+    
+            </div>
+            
+            <div class="flex justify-end mt-1 p-2">
+                @if (updatedReservation) {
+                    <app-common-button buttonType="submit" buttonClass="px-8 text-white py-2 bg-yellow-600 hover:bg-yellow-900" >
+                        <ng-container commonButton>
+                            <span>Editar</span>
+                        </ng-container>
+                    </app-common-button>
+                }
+                @else {
+                    <app-common-button buttonType="submit" buttonClass="px-8 text-white py-2 bg-blue-600 hover:bg-blue-900" >
+                        <ng-container commonButton>
+                            <span>Enviar</span>
+                        </ng-container>
+                    </app-common-button>
+                }
+            </div>
+
+        </form>
+    </ng-container>
+</app-modal>
+
+
+<app-modal modalId="modalDeleteReservation">
+    <ng-container modalExitButton>
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-[16px]">✕</button>
+    </ng-container>
+    <ng-container modalTitle>
+        <h3 class="font-semibold text-[24px] p-2">Cancelar Reserva</h3>
+    </ng-container>
+    <ng-container modalBody>
+
+        <div class="flex flex-col w-full"> 
+            <div class="mt-1 p-2 text-[20px]">
+                <p>Deseja <span class="font-bold">cancelar</span> esta reserva?</p>
+            </div>
+            
+            <div class="flex justify-end mt-1 p-2">
+                <app-common-button buttonClass="px-8 text-white py-2 bg-red-600 hover:bg-red-900" onclick="modalDeleteReservation.close()" (click)="deleteReservation()">
+                    <ng-container commonButton>
+                        <span>Cancelar</span>
+                    </ng-container>
+                </app-common-button>
+            </div>
+        </div>
+
+    </ng-container>
+</app-modal>
+
+@if (alert.value) {
+    <div class="fixed bottom-4 left-4">
+        <app-alert [alert]="alert"></app-alert>
+    </div>
+}
