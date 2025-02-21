@@ -32,11 +32,21 @@ export class ReservationService {
   }
 
   public updateReservation(reservation: Reservation): Observable<Reservation> {
-    return this.checkRoomAvailability(reservation.roomType, reservation.checkIn, reservation.checkOut)
-    .pipe(
+    return this.checkRoomAvailability(
+      reservation.roomType, 
+      reservation.checkIn, 
+      reservation.checkOut, 
+      reservation.status
+    ).pipe(
       switchMap(room => {
         const capacity = this.checkMaxCapacityRoom(reservation.roomType, reservation.numberOfGuests);
-        if (capacity && room) {
+        const date = this.checkCheckInAndCheckOut(reservation.checkIn, reservation.checkOut);
+        if (
+          capacity && 
+          date && 
+          room &&
+          reservation.status !== "cancelled"
+        ) {
           return this.http.put<Reservation>(
             `${this.apiUrl}/${reservation.id}`, {...reservation}
           );
@@ -51,11 +61,20 @@ export class ReservationService {
   }
 
   public createReservation(reservation: Omit<Reservation, 'id'>): Observable<Reservation> {
-    return this.checkRoomAvailability(reservation.roomType, reservation.checkIn, reservation.checkOut)
-    .pipe(
+    return this.checkRoomAvailability(
+      reservation.roomType, 
+      reservation.checkIn, 
+      reservation.checkOut, 
+      reservation.status
+    ).pipe(
       switchMap(room => {
         const capacity = this.checkMaxCapacityRoom(reservation.roomType, reservation.numberOfGuests);
-        if (capacity && room) {
+        const date = this.checkCheckInAndCheckOut(reservation.checkIn, reservation.checkOut);
+        if (
+          capacity && 
+          date && 
+          room
+        ) {
           reservation.status = "pending";
           return this.http.post<Reservation>(
             `${this.apiUrl}`, {...reservation}
@@ -83,14 +102,15 @@ export class ReservationService {
     );
   }
 
-  private checkRoomAvailability(roomType: string, checkIn: string, checkOut: string): Observable<boolean> {
+  private checkRoomAvailability(roomType: string, checkIn: string, checkOut: string, status: string): Observable<boolean> {
     return this.http.get<Array<Reservation>>(
       `${this.apiUrl}/?roomType=${roomType}`
     ).pipe(
       map(res => {
         const reservations = res.filter((r) => {
           moment(r.checkOut).isAfter(moment(checkIn)) &&
-          moment(r.checkIn).isBefore(moment(checkOut))
+          moment(r.checkIn).isBefore(moment(checkOut)) &&
+          status !== "cancelled"
         })
 
         let isValid = true;
@@ -114,16 +134,20 @@ export class ReservationService {
     let isValid = true;
     switch (roomType) {
       case 'Standard':
-        if (numberOfGuests > 2) isValid = false;
+        if (numberOfGuests > 2 || numberOfGuests < 1) isValid = false;
         break;
       case 'Deluxe':
-        if (numberOfGuests > 4) isValid = false;
+        if (numberOfGuests > 4 || numberOfGuests < 1) isValid = false;
         break;
       case 'Suite':
-        if (numberOfGuests > 6) isValid = false;
+        if (numberOfGuests > 6 || numberOfGuests < 1) isValid = false;
         break;
     }
     return isValid;
+  }
+
+  private checkCheckInAndCheckOut(checkIn: string, checkOut: string): boolean {
+    return moment(checkIn).isBefore(moment(checkOut));
   }
 
 }

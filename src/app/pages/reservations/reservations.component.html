@@ -1,4 +1,4 @@
-<div class="mt-[16px] py-[32px] px-[40px] bg-white rounded-[12px]">
+<div class="mt-[16px] py-[32px] px-[40px] bg-neutral dark:text-white rounded-[12px]">
 
     <app-search-bar></app-search-bar>
 
@@ -32,7 +32,7 @@
 </div>
 
 
-<div class="mt-[16px] py-[32px] px-[40px] bg-white rounded-[12px]">
+<div class="mt-[16px] py-[32px] px-[40px] bg-neutral rounded-[12px]">
 
     <div class="flex justify-end pb-4">
         <app-common-button buttonClass="bg-blue-600 hover:bg-blue-900 text-white font-bold py-2 px-4"
@@ -50,24 +50,24 @@
                 <th>
                     <div class="flex items-center justify-center">
                         CheckIn 
-                        <a (click)="sortList('checkIn')" class="cursor-pointer">
-                            <img src="assets/order-icon.svg" class="size-[20px] ml-2" alt="order-icon">
+                        <a (click)="sortList('checkIn'); toggleFilterStates('checkIn')" class="cursor-pointer">
+                            <img [src]="getFilterState('checkIn') ? 'assets/order-icon-primary.svg' : 'assets/order-icon-gray.svg'" class="size-[20px] ml-2" alt="order-icon">
                         </a>
                     </div>
                 </th>
                 <th>
                     <div class="flex items-center justify-center">
                         CheckOut 
-                        <a (click)="sortList('checkOut')" class="cursor-pointer">
-                            <img src="assets/order-icon.svg" class="size-[20px] ml-2" alt="order-icon">
+                        <a (click)="sortList('checkOut'); toggleFilterStates('checkOut')" class="cursor-pointer">
+                            <img [src]="getFilterState('checkOut') ? 'assets/order-icon-primary.svg' : 'assets/order-icon-gray.svg'" class="size-[20px] ml-2" alt="order-icon">
                         </a>
                     </div>
                 </th>
                 <th>
                     <div class="flex items-center justify-center">
                         Quarto 
-                        <a (click)="sortList('roomType')" class="cursor-pointer">
-                            <img src="assets/order-icon.svg" class="size-[20px] ml-2" alt="order-icon">
+                        <a (click)="sortList('roomType'); toggleFilterStates('roomType')" class="cursor-pointer">
+                            <img [src]="getFilterState('roomType') ? 'assets/order-icon-primary.svg' : 'assets/order-icon-gray.svg'" class="size-[20px] ml-2" alt="order-icon">
                         </a>
                     </div>
                 </th>
@@ -75,8 +75,8 @@
                 <th>
                     <div class="flex items-center justify-center">
                         Status 
-                        <a (click)="sortList('status')" class="cursor-pointer">
-                            <img src="assets/order-icon.svg" class="size-[20px] ml-2" alt="order-icon">
+                        <a (click)="sortList('status'); toggleFilterStates('status')" class="cursor-pointer">
+                            <img [src]="getFilterState('status') ? 'assets/order-icon-primary.svg' : 'assets/order-icon-gray.svg'" class="size-[20px] ml-2" alt="order-icon">
                         </a>
                     </div>
                 </th>
@@ -86,27 +86,41 @@
         <ng-container tableBody>
             @for (item of reservationList; track $index) {
                 <tr class="hover">
-                    <td>{{ findGuest(item.guestId)?.name }}</td>
-                    <td>{{ item.checkIn }}</td>
-                    <td>{{ item.checkOut }}</td>
+                    <td>{{ findGuest(item.guestId)?.name || "Hóspede Removido" }}</td>
+                    <td>{{ item.checkIn | date:'shortDate' }}</td>
+                    <td>{{ item.checkOut | date:'shortDate' }}</td>
                     <td>{{ item.roomType }}</td>
                     <td>{{ item.numberOfGuests }}</td>
-                    <td>
-                        <app-badge [badgeType]="item.status" />
-                    </td>
-                    <td>
-                        <div class="flex justify-start">
-                            <a [routerLink]="'/reservations/' + item.id" class="cursor-pointer">
-                                <img src="assets/info-icon.svg" class="size-[26px] mx-1" alt="info-icon">
-                            </a>
-                            <a onclick="modalReservation.showModal()" (click)="toggleUpdatedReservation(item)" class="cursor-pointer">
-                                <img src="assets/edit-icon.svg" class="size-[26px] mx-1" alt="edit-icon">
-                            </a>
-                            <a onclick="modalDeleteReservation.showModal()" (click)="setDeletedReservation(item.id)" class="cursor-pointer">
-                                <img src="assets/remove-icon.svg" class="size-[26px] mx-1" alt="edit-icon">
-                            </a>
-                        </div>
-                    </td>
+                    @if (item.status !== "cancelled") {
+                        <td>
+                            <app-badge [badgeType]="item.status" />
+                        </td>
+                        <td>
+                            <div class="flex justify-start">
+                                <a [routerLink]="'/reservations/' + item.id" class="cursor-pointer">
+                                    <img src="assets/info-icon.svg" class="size-[26px] mx-1" alt="info-icon">
+                                </a>
+                                <a onclick="modalReservation.showModal()" (click)="toggleUpdatedReservation(item)" class="cursor-pointer">
+                                    <img src="assets/edit-icon.svg" class="size-[26px] mx-1" alt="edit-icon">
+                                </a>
+                                <a onclick="modalDeleteReservation.showModal()" (click)="setDeletedReservation(item.id)" class="cursor-pointer">
+                                    <img src="assets/remove-icon.svg" class="size-[26px] mx-1" alt="edit-icon">
+                                </a>
+                            </div>
+                        </td>
+                    }
+                    @else {
+                        <td>
+                            <app-badge [badgeType]="item.status" />
+                        </td>
+                        <td>
+                            <div class="flex justify-start">
+                                <svg class="h-5 w-20 stroke-current" xmlns="http://www.w3.org/2000/svg" >
+                                    <line x1="0" y1="10" x2="250" y2="10"/>
+                                </svg>
+                            </div>
+                        </td>
+                    }
                 </tr>
             }
             @empty {
@@ -143,7 +157,7 @@
                     <label for="guest">Hóspede: <span
                             class="text-red-700 font-bold">*</span></label>
                     <select id="guest" name="guest" formControlName="guest"
-                    class="select select-bordered w-full bg-white text-black">
+                    class="select select-bordered w-full">
                         @for (item of guestList; track $index) {
                             <option [value]="item.id">{{ item.name }} - {{ item.document }}</option>
                         }
@@ -163,7 +177,7 @@
                         <label for="checkIn">CheckIn: <span
                                 class="text-red-700 font-bold">*</span></label>
                         <input type="date" id="checkIn" name="checkIn" formControlName="checkIn"
-                            class="input input-bordered w-full bg-white"/>
+                            class="input input-bordered w-full"/>
 
                         @if (
                             (formReservations.get('checkIn')?.invalid && 
@@ -180,7 +194,7 @@
                         <label for="checkOut">CheckOut: <span
                                 class="text-red-700 font-bold">*</span></label>
                         <input type="date" id="checkOut" name="checkOut" formControlName="checkOut"
-                            class="input input-bordered w-full bg-white"/>
+                            class="input input-bordered w-full"/>
 
                         @if (
                             (formReservations.get('checkOut')?.invalid && 
@@ -198,7 +212,7 @@
                         <label for="roomType">Quarto: <span
                                 class="text-red-700 font-bold">*</span></label>
                         <select id="roomType" name="roomType" formControlName="roomType"
-                            class="select select-bordered w-full max-w-xs bg-white text-black">
+                            class="select select-bordered w-full max-w-xs">
                             <option value="Standard">Standard</option>
                             <option value="Deluxe">Deluxe</option>
                             <option value="Suite">Suite</option>
@@ -221,7 +235,7 @@
                         <label for="numberOfGuests">Número de Hóspede: <span
                                 class="text-red-700 font-bold">*</span></label>
                         <input type="number" id="numberOfGuests" name="numberOfGuests" formControlName="numberOfGuests"
-                            class="input input-bordered bg-white"/>
+                            class="input input-bordered"/>
 
                         @if (
                             (formReservations.get('numberOfGuests')?.invalid && 
@@ -232,7 +246,7 @@
                         }
 
                         @if (maxCapacity) {
-                            <p class="text-red-700">Capacidade máxima atingida</p>
+                            <p class="text-red-700">Selecione uma quantidade válida</p>
                         }
                     </div>
 
@@ -241,7 +255,7 @@
                             <label for="status">Status: <span
                                     class="text-red-700 font-bold">*</span></label>
                             <select id="status" name="status" formControlName="status"
-                                class="select select-bordered w-full max-w-xs bg-white text-black">
+                                class="select select-bordered w-full max-w-xs">
                                 <option value="confirmed">Confirmed</option>
                                 <option value="pending">Pending</option>
                                 <option value="cancelled">Cancelled</option>
@@ -261,7 +275,7 @@
                 <div class="flex flex-col p-2">
                     <label for="remarks">Observações: </label>
                     <textarea id="remarks" name="remarks" formControlName="remarks"
-                        class="textarea textarea-bordered bg-white">
+                        class="textarea textarea-bordered">
                     </textarea>
                 </div>
     

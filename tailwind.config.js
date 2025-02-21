@@ -15,13 +15,15 @@ module.exports = {
         light: {
           ...require("daisyui/src/theming/themes")["light"],
           "base-100": "#EFEFEF",
+          "neutral": "white",
         },
-        dark: {
-          ...require("daisyui/src/theming/themes")["dark"]
+        dracula: {
+          ...require("daisyui/src/theming/themes")["dracula"],
+          primary: "#4a00ff"
         }
       },
     ], 
-    darkTheme: "dark", 
+    darkMode: ['selector', '[data-theme="dracula"]'], 
     base: true, 
     styled: true, 
     utils: true, 

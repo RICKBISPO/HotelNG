@@ -2,7 +2,11 @@ import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angul
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { registerLocaleData } from '@angular/common';
+import { provideEnvironmentNgxMask } from 'ngx-mask';
+import localePt from '@angular/common/locales/pt';
 
+registerLocaleData(localePt);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -10,5 +14,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withFetch()),
+    provideEnvironmentNgxMask(),
   ],
 };

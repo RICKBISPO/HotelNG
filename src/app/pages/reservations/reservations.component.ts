@@ -8,13 +8,14 @@ import { GuestService } from '../../services/guest.service';
 import { Guest } from '../../model/guest';
 import { AlertComponent } from '../../components/alert/alert.component';
 import { Reservation } from '../../model/reservation';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
 import { SearchBarService } from '../../services/search-bar.service';
 import { TableComponent } from "../../components/table/table.component";
 import { Alert } from '../../model/alert';
 import { BadgeComponent } from "../../components/badge/badge.component";
 import { RouterLink } from '@angular/router';
+import { ElementState } from '../../model/elementState';
 
 /**
  * Componente criado para informacoes de reservas.
@@ -22,7 +23,7 @@ import { RouterLink } from '@angular/router';
  */
 @Component({
   selector: 'app-reservations',
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, ModalComponent, CommonButtonComponent, AlertComponent, SearchBarComponent, TableComponent, BadgeComponent, RouterLink],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, ModalComponent, CommonButtonComponent, AlertComponent, SearchBarComponent, TableComponent, BadgeComponent, RouterLink, DatePipe],
   templateUrl: './reservations.component.html',
   styleUrl: './reservations.component.scss'
 })
@@ -44,6 +45,13 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
     roomType: false,
     status: false
   };
+
+  filterStates: Array<ElementState> = [
+    { name: "checkIn", value: false },
+    { name: "checkOut", value: false },
+    { name: "roomType", value: false },
+    { name: "status", value: false }
+  ];
 
   constructor (
     private reservationService: ReservationService,
@@ -72,9 +80,11 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
         if (searchValue !== "") {
           const newReservationList = new Array<Reservation>;
           this.reservationList.forEach((reservation) => {
+            const checkIn = String(new DatePipe('pt-BR').transform(reservation.checkIn, 'shortDate'));
+            const checkOut = String(new DatePipe('pt-BR').transform(reservation.checkOut, 'shortDate'));  
             if (
-              (reservation.checkIn.toLowerCase().includes(searchValue.toLowerCase()) && this.checkboxStates.checkIn) ||
-              (reservation.checkOut.toLowerCase().includes(searchValue.toLowerCase()) && this.checkboxStates.checkOut) ||
+              (checkIn.includes(searchValue.toLowerCase()) && this.checkboxStates.checkIn) ||
+              (checkOut.includes(searchValue.toLowerCase()) && this.checkboxStates.checkOut) ||
               (reservation.roomType.toLowerCase().includes(searchValue.toLowerCase()) && this.checkboxStates.roomType) ||
               (reservation.status.toLowerCase().includes(searchValue.toLowerCase()) && this.checkboxStates.status)
             ) {
@@ -169,7 +179,8 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
   }
 
   findGuest(id: string): Guest | undefined {
-    return this.guestList.find((guest) => guest.id === id);
+    if (id) return this.guestList.find((guest) => guest.id === id);
+    return undefined;
   }
 
   setDeletedReservation(id: string): void {
@@ -209,6 +220,8 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
     this.alert.message = message;
     setTimeout(() => {
       this.alert.value = false;
+      this.maxRooms = false;
+      this.maxCapacity = false;
     }, 2000);
   }
 
@@ -225,6 +238,21 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
     else if (column === "status") {
       this.reservationList.sort((a, b) => a.status.localeCompare(b.status));
     }
+  }
+
+  getFilterState(column: string): ElementState | undefined {
+    return this.filterStates.find((filter) => filter.name === column && filter.value);
+  }
+
+  toggleFilterStates(column: string): void {
+    this.filterStates.map((filter) => {
+      if (filter.name === column) {
+        filter.value = true;
+      }
+      else {
+        filter.value = false;
+      }
+    });
   }
 
 }

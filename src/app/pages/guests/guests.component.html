@@ -1,4 +1,4 @@
-<div class="mt-[16px] py-[32px] px-[40px] bg-white rounded-[12px]">
+<div class="mt-[16px] py-[32px] px-[40px] bg-neutral rounded-[12px]">
 
     <app-search-bar></app-search-bar>
 
@@ -25,7 +25,7 @@
 
 </div>
 
-<div class="mt-[16px] py-[32px] px-[40px] bg-white rounded-[12px]">
+<div class="mt-[16px] py-[32px] px-[40px] bg-neutral rounded-[12px]">
 
     <div class="flex justify-end pb-4">
         <app-common-button buttonClass="bg-blue-600 hover:bg-blue-900 text-white font-bold py-2 px-4"
@@ -42,7 +42,7 @@
                 <th>Nome</th>
                 <th>Email</th>
                 <th>Telefone</th>
-                <th>Documento</th>
+                <th>CPF</th>
                 <th></th>
             </tr>
         </ng-container>
@@ -51,8 +51,8 @@
                 <tr class="hover">
                     <td>{{ item.name }}</td>
                     <td>{{ item.email }}</td>
-                    <td>{{ item.phone }}</td>
-                    <td>{{ item.document }}</td>
+                    <td>{{ item.phone | mask: '(00) 00000-0000' }}</td>
+                    <td>{{ item.document | mask: '000.000.000-00' }}</td>
                     <td>
                         <div class="flex justify-start">
                             <a onclick="modalGuest.showModal()" (click)="toggleUpdatedGuest(item)" class="cursor-pointer">
@@ -133,29 +133,29 @@
                     <label for="phone">Telefone: <span
                             class="text-red-700 font-bold">*</span></label>
                     <input type="text" id="phone" name="phone" formControlName="phone"
-                        class="input input-bordered bg-white"/>
+                        class="input input-bordered bg-white" mask="(00) 00000-0000"/>
 
                     @if (
                         (formGuests.get('phone')?.invalid && 
                         formGuests.get('phone')?.touched) ||
                         (alertAll && formGuests.get('phone')?.invalid)
                     ) {
-                        <p class="text-red-700">Preencha o campo acima</p>
+                        <p class="text-red-700">Preencha o campo acima corretamente</p>
                     }
                 </div>
 
                 <div class="flex flex-col p-2">
-                    <label for="document">Documento (CPF ou Passaporte): <span
+                    <label for="document">CPF: <span
                             class="text-red-700 font-bold">*</span></label>
                     <input type="text" id="document" name="document" formControlName="document"
-                        class="input input-bordered bg-white"/>
+                        class="input input-bordered bg-white" mask="000.000.000-00"/>
 
                     @if (
                         (formGuests.get('document')?.invalid && 
                         formGuests.get('document')?.touched) ||
                         (alertAll && formGuests.get('document')?.invalid)
                     ) {
-                        <p class="text-red-700">Preencha o campo acima</p>
+                        <p class="text-red-700">Preencha o campo acima corretamente</p>
                     }
 
                     @if (existingDocument) {
@@ -188,6 +188,9 @@
 
 
 <app-modal modalId="modalDeleteGuest">
+    <ng-container modalExitButton>
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-[16px]">✕</button>
+    </ng-container>
     <ng-container modalTitle>
         <h3 class="font-semibold text-[24px] p-2">Remover Hóspede</h3>
     </ng-container>

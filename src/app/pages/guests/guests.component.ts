@@ -10,6 +10,7 @@ import { TableComponent } from "../../components/table/table.component";
 import { SearchBarComponent } from '../../components/search-bar/search-bar.component';
 import { SearchBarService } from '../../services/search-bar.service';
 import { Alert } from '../../model/alert';
+import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 
 
 /**
@@ -18,7 +19,7 @@ import { Alert } from '../../model/alert';
  */
 @Component({
   selector: 'app-guests',
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, ModalComponent, CommonButtonComponent, AlertComponent, TableComponent, SearchBarComponent],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, ModalComponent, CommonButtonComponent, AlertComponent, TableComponent, SearchBarComponent, NgxMaskPipe, NgxMaskDirective],
   templateUrl: './guests.component.html',
   styleUrl: './guests.component.scss'
 })
@@ -46,8 +47,8 @@ export class GuestsComponent implements OnInit, AfterViewInit {
     this.formGuests = new FormGroup({
       name: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      phone: new FormControl('', [Validators.required]),
-      document: new FormControl('', [Validators.required]),
+      phone: new FormControl('', [Validators.required, Validators.minLength(11)]),
+      document: new FormControl('', [Validators.required, Validators.minLength(11)]),
     });
   }
 
@@ -86,7 +87,7 @@ export class GuestsComponent implements OnInit, AfterViewInit {
         phone: this.formGuests.value.phone,
         document: this.formGuests.value.document,
       }
-      
+
       if (this.updatedGuest) {
         const guestWithId = { 
           id: this.updatedGuest.id,
@@ -182,6 +183,8 @@ export class GuestsComponent implements OnInit, AfterViewInit {
     this.alert.message = message;
     setTimeout(() => {
       this.alert.value = false;
+      this.existingEmail = false;
+      this.existingDocument = false;
     }, 2000);
   }
 

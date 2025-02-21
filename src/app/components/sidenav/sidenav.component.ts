@@ -13,4 +13,12 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class SidenavComponent {
 
+  swapLogo: boolean = false;
+
+  constructor() { }
+
+  toggleSwapLogo(): void {
+    this.swapLogo = !this.swapLogo; 
+  }
+
 }
