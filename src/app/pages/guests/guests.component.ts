@@ -95,7 +95,6 @@ export class GuestsComponent implements OnInit, AfterViewInit {
         }
         this.guestService.updateGuest(guestWithId).subscribe({
           next: () => {
-            this.formGuests.reset();
             this.existingEmail = false;
             this.existingDocument = false;
   
@@ -107,13 +106,13 @@ export class GuestsComponent implements OnInit, AfterViewInit {
             this.existingDocument = error.document;
   
             this.setAlert("error", "Erro ao Atualizar Hóspede");
-          }
+          },
+          complete: () => this.formGuests.reset()
         });
       }
       else {
         this.guestService.createGuest(guest).subscribe({
           next: () => {
-            this.formGuests.reset();
             this.existingEmail = false;
             this.existingDocument = false;
   
@@ -125,7 +124,8 @@ export class GuestsComponent implements OnInit, AfterViewInit {
             this.existingDocument = error.document;
   
             this.setAlert("error", "Erro ao Adicionar Hóspede");
-          }
+          },
+          complete: () => this.formGuests.reset()
         });
       }
       this.alertAll = false;
@@ -158,7 +158,7 @@ export class GuestsComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
           this.alert.value = false;
         }, 2000);
-      }
+      },
     });
   }
 

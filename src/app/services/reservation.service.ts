@@ -107,12 +107,17 @@ export class ReservationService {
       `${this.apiUrl}/?roomType=${roomType}`
     ).pipe(
       map(res => {
-        const reservations = res.filter((r) => {
-          moment(r.checkOut).isAfter(moment(checkIn)) &&
-          moment(r.checkIn).isBefore(moment(checkOut)) &&
-          status !== "cancelled"
-        })
-
+        const reservations = new Array<Reservation>;
+        res.forEach((reservation) => {
+          if (
+            reservation.status !== 'cancelled' &&
+            (moment(reservation.checkIn).isBetween(moment(checkIn),moment(checkOut)) ||
+            moment(reservation.checkOut).isBetween(moment(checkIn),moment(checkOut)))
+          ) {
+            reservations.push(reservation);
+          }
+        });
+        
         let isValid = true;
         switch (roomType) {
           case 'Standard':

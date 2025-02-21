@@ -55,7 +55,7 @@ export class GuestService {
       })
     );
   }
-
+ 
   public createGuest(guest: Omit<Guest, 'id'>): Observable<Guest> {
     return forkJoin({
       email: this.checkExistingEmail(guest.email),

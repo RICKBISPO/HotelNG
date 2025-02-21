@@ -16,6 +16,7 @@ import { Alert } from '../../model/alert';
 import { BadgeComponent } from "../../components/badge/badge.component";
 import { RouterLink } from '@angular/router';
 import { ElementState } from '../../model/elementState';
+import { NgxMaskPipe } from 'ngx-mask';
 
 /**
  * Componente criado para informacoes de reservas.
@@ -23,7 +24,7 @@ import { ElementState } from '../../model/elementState';
  */
 @Component({
   selector: 'app-reservations',
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, ModalComponent, CommonButtonComponent, AlertComponent, SearchBarComponent, TableComponent, BadgeComponent, RouterLink, DatePipe],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, ModalComponent, CommonButtonComponent, AlertComponent, SearchBarComponent, TableComponent, BadgeComponent, RouterLink, DatePipe, NgxMaskPipe],
   templateUrl: './reservations.component.html',
   styleUrl: './reservations.component.scss'
 })
@@ -64,7 +65,7 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
       checkOut: new FormControl('', [Validators.required]),
       roomType: new FormControl('', [Validators.required]),
       numberOfGuests: new FormControl('', [Validators.required]),
-      status: new FormControl('pending', [Validators.required]),
+      status: new FormControl('pending'),
       remarks: new FormControl(''),
     });
   }
@@ -119,7 +120,6 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
         }
         this.reservationService.updateReservation(reservationWithId).subscribe({
           next: () => {
-            this.formReservations.reset();
             this.maxRooms = false;
             this.maxCapacity = false;
   
@@ -131,13 +131,13 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
             this.maxCapacity = error.capacity;
 
             this.setAlert("error", "Erro ao Atualizar Reserva");
-          }
+          },
+          complete: () => this.formReservations.reset()
         });
       }
       else {
         this.reservationService.createReservation(reservation).subscribe({
           next: () => {
-            this.formReservations.reset();
             this.maxRooms = false;
             this.maxCapacity = false;
   
@@ -149,7 +149,8 @@ export class ReservationsComponent implements OnInit, AfterViewInit {
             this.maxCapacity = error.capacity;
 
             this.setAlert("error", "Erro ao Adicionar Reserva");
-          }
+          },
+          complete: () => this.formReservations.reset()
         });
       }
       
