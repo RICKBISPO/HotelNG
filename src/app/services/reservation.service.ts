@@ -35,8 +35,8 @@ export class ReservationService {
     return this.checkRoomAvailability(
       reservation.roomType, 
       reservation.checkIn, 
-      reservation.checkOut, 
-      reservation.status
+      reservation.checkOut,
+      reservation.id
     ).pipe(
       switchMap(room => {
         const capacity = this.checkMaxCapacityRoom(reservation.roomType, reservation.numberOfGuests);
@@ -64,8 +64,7 @@ export class ReservationService {
     return this.checkRoomAvailability(
       reservation.roomType, 
       reservation.checkIn, 
-      reservation.checkOut, 
-      reservation.status
+      reservation.checkOut
     ).pipe(
       switchMap(room => {
         const capacity = this.checkMaxCapacityRoom(reservation.roomType, reservation.numberOfGuests);
@@ -102,17 +101,39 @@ export class ReservationService {
     );
   }
 
-  private checkRoomAvailability(roomType: string, checkIn: string, checkOut: string, status: string): Observable<boolean> {
+  private checkRoomAvailability(roomType: string, checkIn: string, checkOut: string, id?: string): Observable<boolean> {
     return this.http.get<Array<Reservation>>(
       `${this.apiUrl}/?roomType=${roomType}`
     ).pipe(
       map(res => {
         const reservations = new Array<Reservation>;
+        let dateIsSame = false;
+        
         res.forEach((reservation) => {
           if (
+            id === reservation.id && 
+            (
+              moment(reservation.checkIn).isSame(moment(checkIn)) && moment(reservation.checkIn).isSame(moment(checkIn))
+            )
+          ) {
+            dateIsSame = true;
+          }
+        });
+
+        if (dateIsSame) {
+          return dateIsSame;
+        }
+
+        res.forEach((reservation) => {
+
+          if (
             reservation.status !== 'cancelled' &&
-            (moment(reservation.checkIn).isBetween(moment(checkIn),moment(checkOut)) ||
-            moment(reservation.checkOut).isBetween(moment(checkIn),moment(checkOut)))
+            (
+              moment(reservation.checkIn).isBetween(moment(checkIn),moment(checkOut), null, "[]") ||
+              moment(reservation.checkOut).isBetween(moment(checkIn),moment(checkOut), null, "[]") ||
+              (moment((checkIn)).isBefore(reservation.checkIn) && moment((checkOut)).isAfter(reservation.checkOut)) ||
+              (moment((reservation.checkIn)).isBefore(checkIn) && moment((reservation.checkOut)).isAfter(checkOut))
+            )
           ) {
             reservations.push(reservation);
           }

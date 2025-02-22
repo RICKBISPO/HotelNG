@@ -10,14 +10,44 @@
   ],
   "reservations": [
     {
-      "id": "1",
+      "id": "5173",
       "guestId": "1",
-      "checkIn": "2025-03-01",
-      "checkOut": "2025-03-05",
-      "roomType": "Deluxe",
+      "checkIn": "2025-02-01",
+      "checkOut": "2025-02-07",
+      "roomType": "Suite",
       "numberOfGuests": 3,
       "status": "pending",
-      "remarks": "Reserva feita online."
+      "remarks": ""
+    },
+    {
+      "id": "f98e",
+      "guestId": "1",
+      "checkIn": "2025-01-31",
+      "checkOut": "2025-02-13",
+      "roomType": "Suite",
+      "numberOfGuests": 3,
+      "status": "pending",
+      "remarks": null
+    },
+    {
+      "id": "6ecb",
+      "guestId": "1",
+      "checkIn": "2025-02-01",
+      "checkOut": "2025-02-07",
+      "roomType": "Suite",
+      "numberOfGuests": 3,
+      "status": "pending",
+      "remarks": ""
+    },
+    {
+      "id": "fcac",
+      "guestId": "1",
+      "checkIn": "2025-02-14",
+      "checkOut": "2025-02-27",
+      "roomType": "Suite",
+      "numberOfGuests": 1,
+      "status": "pending",
+      "remarks": ""
     }
   ]
 }
