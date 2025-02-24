@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Reservation } from '../model/reservation';
 import { map, Observable, switchMap } from 'rxjs';
 import moment from 'moment';
-import { MaxRoomsAndCapacityError } from '../../errors/MaxRoomsAndCapacityError';
+import { RoomError } from '../errors/RoomError';
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +51,7 @@ export class ReservationService {
             `${this.apiUrl}/${reservation.id}`, {...reservation}
           );
         } else {
-          throw new MaxRoomsAndCapacityError(
+          throw new RoomError(
             !room, 
             !capacity
           );
@@ -79,7 +79,7 @@ export class ReservationService {
             `${this.apiUrl}`, {...reservation}
           );
         } else {
-          throw new MaxRoomsAndCapacityError(
+          throw new RoomError(
             !room, 
             !capacity
           );

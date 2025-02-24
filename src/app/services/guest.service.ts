@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, map, Observable, switchMap } from 'rxjs';
 import { Guest } from '../model/guest';
-import { ExistingEmailAndDocumentError } from '../../errors/ExistingEmailAndDocumentError';
+import { ExistingEmailAndDocumentError } from '../errors/ExistingEmailAndDocumentError';
 import { ReservationService } from './reservation.service';
-import { ExistingReservationsError } from '../../errors/ExistingReservationsError';
+import { ExistingReservationsError } from '../errors/ExistingReservationsError';
 
 @Injectable({
   providedIn: 'root'

@@ -4,6 +4,7 @@ import { ReservationsComponent } from './pages/reservations/reservations.compone
 import { HomeComponent } from './pages/home/home.component';
 import { GuestsComponent } from './pages/guests/guests.component';
 import { ReservationsDetailsComponent } from './pages/reservations-details/reservations-details.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 export const routes: Routes = [
 
@@ -29,6 +30,11 @@ export const routes: Routes = [
                 component: GuestsComponent
             }
         ]
+    },
+
+    {
+        path: '**',
+        component: NotFoundComponent,
     }
 
 ];
