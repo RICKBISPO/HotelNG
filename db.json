@@ -1,0 +1,98 @@
+{
+  "guests": [
+    {
+      "id": "1",
+      "name": "João Silva",
+      "email": "joao.silva@email.com",
+      "phone": "(11) 99999-1234",
+      "document": "123.456.789-00"
+    },
+    {
+      "id": "2",
+      "name": "Maria Oliveira",
+      "email": "maria.oliveira@email.com",
+      "phone": "(21) 98888-5678",
+      "document": "987.654.321-00"
+    },
+    {
+      "id": "7fab",
+      "name": "Henrique Bispo",
+      "email": "henrique@gmail.com",
+      "phone": "16996584235",
+      "document": "52865672432"
+    },
+    {
+      "id": "9a13",
+      "name": "Teste Ferreira",
+      "email": "ferreirinha@gmail.com",
+      "phone": "16995731238",
+      "document": "63217367412"
+    },
+    {
+      "id": "37eb",
+      "name": "Marcão Dopix",
+      "email": "pixpix@gmail.com",
+      "phone": "11983712893",
+      "document": "86124726141"
+    },
+    {
+      "id": "71e8",
+      "name": "Jurema Oliveira",
+      "email": "jurema@gmail.com",
+      "phone": "11263123913",
+      "document": "09743723461"
+    }
+  ],
+  "reservations": [
+    {
+      "id": "1",
+      "guestId": "1",
+      "checkIn": "2025-03-01",
+      "checkOut": "2025-03-05",
+      "roomType": "Standard",
+      "numberOfGuests": 2,
+      "status": "confirmed",
+      "remarks": "Reserva feita online."
+    },
+    {
+      "id": "2",
+      "guestId": "2",
+      "checkIn": "2025-03-10",
+      "checkOut": "2025-03-15",
+      "roomType": "Deluxe",
+      "numberOfGuests": 1,
+      "status": "cancelled",
+      "remarks": "Aguardando confirmação de pagamento."
+    },
+    {
+      "id": "3458",
+      "guestId": "71e8",
+      "checkIn": "2025-02-01",
+      "checkOut": "2025-02-07",
+      "roomType": "Deluxe",
+      "numberOfGuests": 2,
+      "status": "cancelled",
+      "remarks": ""
+    },
+    {
+      "id": "c987",
+      "guestId": "9a13",
+      "checkIn": "2025-02-20",
+      "checkOut": "2025-03-06",
+      "roomType": "Standard",
+      "numberOfGuests": 2,
+      "status": "pending",
+      "remarks": null
+    },
+    {
+      "id": "b33c",
+      "guestId": "7fab",
+      "checkIn": "2025-02-24",
+      "checkOut": "2025-03-07",
+      "roomType": "Deluxe",
+      "numberOfGuests": 1,
+      "status": "pending",
+      "remarks": ""
+    }
+  ]
+}

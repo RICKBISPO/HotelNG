@@ -1,0 +1,96 @@
+<div class="mt-[16px]">
+    <div class="relative">
+        <img src="assets/hotel-banner.jpg" class="rounded-[6px] h-[40vh] w-full object-cover" alt="banner">
+        <div class="absolute top-0 w-full h-[40vh] bg-gradient-to-r from-blue-400 from-20% rounded-[6px]"></div>
+    
+        <div class="absolute top-0 left-14 h-[40vh] flex flex-col justify-center items-start">
+            <div class="text-[40px] font-bold text-white pb-[1%]">
+                HOTEL NG
+            </div>
+            <div class="text-[20px] text-white my-2">
+                <p>Bem vindo!</p>
+                <p>Este é o sistema de reservas do HOTEL NG</p>
+            </div>
+            <div class="pt-[4%] pb-[1%]">
+                <app-common-button routerLink="/reservations" buttonClass="bg-neutral text-blue-600 hover:bg-blue-900 hover:text-white font-bold py-3 px-5">
+                    <ng-container commonButton>
+                        <span>Reservas</span>
+                    </ng-container>
+                </app-common-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pt-[3%] pb-[1%]">
+    <div class="flex items-center justify-between text-[32px] font-bold">
+        Reservas do Dia
+    </div>
+</div>
+
+<div class="mt-[16px] py-[32px] px-[40px] bg-neutral rounded-[12px]">
+
+    <app-table>
+        <ng-container tableHead>
+            <tr>
+                <th>Hóspede</th>
+                <th>
+                    <div class="flex items-center justify-center">
+                        CheckIn 
+                        <a (click)="sortList('checkIn'); toggleFilterStates('checkIn')" class="cursor-pointer">
+                            <img [src]="getFilterState('checkIn') ? 'assets/order-icon-primary.svg' : 'assets/order-icon-gray.svg'" class="size-[20px] ml-2" alt="order-icon">
+                        </a>
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-center">
+                        CheckOut 
+                        <a (click)="sortList('checkOut'); toggleFilterStates('checkOut')" class="cursor-pointer">
+                            <img [src]="getFilterState('checkOut') ? 'assets/order-icon-primary.svg' : 'assets/order-icon-gray.svg'" class="size-[20px] ml-2" alt="order-icon">
+                        </a>
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center justify-center">
+                        Quarto 
+                        <a (click)="sortList('roomType'); toggleFilterStates('roomType')" class="cursor-pointer">
+                            <img [src]="getFilterState('roomType') ? 'assets/order-icon-primary.svg' : 'assets/order-icon-gray.svg'" class="size-[20px] ml-2" alt="order-icon">
+                        </a>
+                    </div>
+                </th>
+                <th>Nº de Hóspedes</th>
+                <th>
+                    <div class="flex items-center justify-center">
+                        Status 
+                        <a (click)="sortList('status'); toggleFilterStates('status')" class="cursor-pointer">
+                            <img [src]="getFilterState('status') ? 'assets/order-icon-primary.svg' : 'assets/order-icon-gray.svg'" class="size-[20px] ml-2" alt="order-icon">
+                        </a>
+                    </div>
+                </th>
+            </tr>
+        </ng-container>
+        <ng-container tableBody>
+            @for (item of reservationList; track $index) {
+                <tr class="hover">
+                    <td>{{ findGuest(item.guestId)?.name || "Hóspede Removido" }}</td>
+                    <td>{{ item.checkIn | date:'shortDate' }}</td>
+                    <td>{{ item.checkOut | date:'shortDate' }}</td>
+                    <td>{{ item.roomType }}</td>
+                    <td>{{ item.numberOfGuests }}</td>
+                    <td>
+                        <app-badge [badgeType]="item.status" />
+                    </td>
+                </tr>
+            }
+            @empty {
+                <td colspan="7">
+                    <div class="mt-4 text-[20px]">
+                        Nenhuma Reserva do Dia Listada
+                    </div>
+                </td>
+            }
+        </ng-container>
+    </app-table>
+
+</div>
+

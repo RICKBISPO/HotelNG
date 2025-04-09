@@ -1,0 +1,19 @@
+@if (badgeType === "confirmed") {
+    <div class="badge badge-success gap-2 text-[14px]">
+        <img src="assets/confirmed-icon.svg" class="size-[16px]" alt="confirmed-icon">
+        confirmed
+    </div>
+}
+@else if (badgeType === "pending") {
+    <div class="badge badge-warning gap-2 text-[14px]">
+        <img src="assets/warning-icon.svg" class="size-[16px]" alt="warning-icon">
+        pending
+    </div>
+}
+@else if (badgeType === "cancelled") {
+    <div class="badge badge-error gap-2 text-[14px]">
+        <img src="assets/error-icon.svg" class="size-[16px]" alt="error-icon">
+        cancelled
+    </div>
+}
+

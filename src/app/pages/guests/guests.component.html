@@ -1,0 +1,221 @@
+<div class="mt-[16px] py-[32px] px-[40px] bg-neutral rounded-[12px]">
+
+    <app-search-bar></app-search-bar>
+
+    <div class="flex justify-start items-center mt-2">
+        <div class="flex justify-start items-center mr-6">
+            <label class="label cursor-pointer">
+                <input [(ngModel)]="checkboxStates.name" type="checkbox" class="checkbox checkbox-primary size-[20px] mr-2" />
+                <span class="label-text">Nome</span>
+            </label>
+        </div>
+        <div class="flex justify-start items-center mr-6">
+            <label class="label cursor-pointer">
+                <input [(ngModel)]="checkboxStates.email" type="checkbox" class="checkbox checkbox-primary size-[20px] mr-2" />
+                <span class="label-text">Email</span>
+            </label>
+        </div>
+        <div class="flex justify-start items-center mr-6">
+            <label class="label cursor-pointer">
+                <input [(ngModel)]="checkboxStates.document" type="checkbox" class="checkbox checkbox-primary size-[20px] mr-2" />
+                <span class="label-text">CPF</span>
+            </label>
+        </div>
+    </div>
+
+</div>
+
+<div class="mt-[16px] py-[32px] px-[40px] bg-neutral rounded-[12px]">
+
+    <div class="flex justify-end pb-4">
+        <app-common-button buttonClass="bg-blue-600 hover:bg-blue-900 text-white font-bold py-2 px-4"
+        onclick="modalGuest.showModal()">
+        <ng-container commonButton>
+            <span>Adicionar Hóspede +</span>
+        </ng-container>
+        </app-common-button>
+    </div>
+
+    <app-table>
+        <ng-container tableHead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>CPF</th>
+                <th></th>
+            </tr>
+        </ng-container>
+        <ng-container tableBody>
+            @for (item of guestList; track $index) {
+                <tr class="hover">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.email }}</td>
+                    <td>{{ item.phone | mask: '(00) 00000-0000' }}</td>
+                    <td>{{ item.document | mask: '000.000.000-00' }}</td>
+                    <td>
+                        <div class="flex justify-start">
+                            <a onclick="modalGuest.showModal()" (click)="toggleUpdatedGuest(item)" class="cursor-pointer">
+                                <img src="assets/edit-icon.svg" class="size-[26px] mx-1" alt="edit-icon">
+                            </a>
+                            <a onclick="modalDeleteGuest.showModal()" (click)="setDeletedGuest(item.id)" class="cursor-pointer">
+                                <img src="assets/remove-icon.svg" class="size-[26px] mx-1" alt="edit-icon">
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            @empty {
+                <td colspan="5">
+                    <div class="mt-4 text-[20px]">
+                        Nenhum Hóspede Listado
+                    </div>
+                </td>
+            }
+        </ng-container>
+    </app-table>
+    
+</div>   
+
+
+<app-modal modalId="modalGuest">
+    <ng-container modalExitButton>
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-[16px]" (click)="toggleUpdatedGuest()">✕</button>
+    </ng-container>
+    <ng-container modalTitle>
+        @if (updatedGuest) {
+            <h3 class="font-semibold text-[24px] p-2">Editar Hóspede</h3>
+        }
+        @else {
+            <h3 class="font-semibold text-[24px] p-2">Novo Hóspede</h3>
+        }
+    </ng-container>
+    <ng-container modalBody>
+        <form [formGroup]="formGuests" (ngSubmit)="onSubmit()" class="w-full">
+
+            <div class="w-full">
+
+                <div class="flex flex-col p-2">
+                    <label for="name">Nome: <span
+                            class="text-red-700 font-bold">*</span></label>
+                    <input type="text" id="name" name="name" formControlName="name"
+                        class="input input-bordered bg-white"/>
+
+                    @if (
+                        (formGuests.get('name')?.invalid && 
+                        formGuests.get('name')?.touched) ||
+                        (alertAll && formGuests.get('name')?.invalid)
+                    ) {
+                        <p class="text-red-700">Preencha o campo acima</p>
+                    }
+                </div>
+
+                <div class="flex flex-col p-2">
+                    <label for="email">Email: <span
+                            class="text-red-700 font-bold">*</span></label>
+                    <input type="email" id="email" name="email" formControlName="email"
+                        class="input input-bordered bg-white"/>
+
+                    @if (
+                        (formGuests.get('email')?.invalid && 
+                        formGuests.get('email')?.touched) ||
+                        (alertAll && formGuests.get('email')?.invalid)
+                    ) {
+                        <p class="text-red-700">Insira um email válido</p>
+                    }
+
+                    @if (existingEmail) {
+                        <p class="text-red-700">Email existente</p>
+                    }
+                </div>
+
+                <div class="flex flex-col p-2">
+                    <label for="phone">Telefone: <span
+                            class="text-red-700 font-bold">*</span></label>
+                    <input type="text" id="phone" name="phone" formControlName="phone"
+                        class="input input-bordered bg-white" mask="(00) 00000-0000"/>
+
+                    @if (
+                        (formGuests.get('phone')?.invalid && 
+                        formGuests.get('phone')?.touched) ||
+                        (alertAll && formGuests.get('phone')?.invalid)
+                    ) {
+                        <p class="text-red-700">Preencha o campo acima corretamente</p>
+                    }
+                </div>
+
+                <div class="flex flex-col p-2">
+                    <label for="document">CPF: <span
+                            class="text-red-700 font-bold">*</span></label>
+                    <input type="text" id="document" name="document" formControlName="document"
+                        class="input input-bordered bg-white" mask="000.000.000-00"/>
+
+                    @if (
+                        (formGuests.get('document')?.invalid && 
+                        formGuests.get('document')?.touched) ||
+                        (alertAll && formGuests.get('document')?.invalid)
+                    ) {
+                        <p class="text-red-700">Preencha o campo acima corretamente</p>
+                    }
+
+                    @if (existingDocument) {
+                        <p class="text-red-700">Documento existente</p>
+                    }
+                </div>
+    
+            </div>
+            
+            <div class="flex justify-end mt-1 p-2">
+                @if (updatedGuest) {
+                    <app-common-button buttonType="submit" buttonClass="px-8 text-white py-2 bg-yellow-600 hover:bg-yellow-900" >
+                        <ng-container commonButton>
+                            <span>Editar</span>
+                        </ng-container>
+                    </app-common-button>
+                }
+                @else {
+                    <app-common-button buttonType="submit" buttonClass="px-8 text-white py-2 bg-blue-600 hover:bg-blue-900" >
+                        <ng-container commonButton>
+                            <span>Enviar</span>
+                        </ng-container>
+                    </app-common-button>
+                }
+            </div>
+
+        </form>
+    </ng-container>
+</app-modal>
+
+
+<app-modal modalId="modalDeleteGuest">
+    <ng-container modalExitButton>
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-[16px]">✕</button>
+    </ng-container>
+    <ng-container modalTitle>
+        <h3 class="font-semibold text-[24px] p-2">Remover Hóspede</h3>
+    </ng-container>
+    <ng-container modalBody>
+
+        <div class="flex flex-col w-full"> 
+            <div class="mt-1 p-2 text-[18px]">
+                <p>Deseja <span class="font-bold">remover</span> este hóspede?</p>
+            </div>
+            
+            <div class="flex justify-end mt-1 p-2">
+                <app-common-button buttonClass="px-8 text-white py-2 bg-red-600 hover:bg-red-900" onclick="modalDeleteGuest.close()" (click)="deleteGuest()">
+                    <ng-container commonButton>
+                        <span>Remover</span>
+                    </ng-container>
+                </app-common-button>
+            </div>
+        </div>
+
+    </ng-container>
+</app-modal>
+
+
+@if (alert.value) {
+    <div class="fixed bottom-4 left-4">
+        <app-alert [alert]="alert"></app-alert>
+    </div>
+}
